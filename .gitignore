@@ -1,0 +1,29 @@
+# editors
+.vscode
+*.swp
+*~
+
+# python
+.venv
+
+# build
+/build*
+/twister-out*
+
+__pycache__/
+
+# docs
+/doc/_build*
+
+compile_commands.json
+.cache
+.clang-format
+build/
+zephyr/
+app/compile_commands.json
+bootloader/
+modules/
+nrf/
+nrfxlib/
+test/
+tools/
