@@ -1,28 +1,43 @@
 #include "door_sensor.h"
 
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(door_sensor);
 
-static const struct gpio_dt_spec sw = GPIO_DT_SPEC_GET(DT_NODELABEL(sensor), gpios);
+#define DEBOUNCE_MS 10
+
+static const struct gpio_dt_spec sw =
+	GPIO_DT_SPEC_GET(DT_NODELABEL(sensor), gpios);
 static struct gpio_callback gpio_cb_data;
 static door_sensor_callback_t state_changed_cb;
+static struct k_work_delayable debounce_work;
 
-static void gpio_callback(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+static void debounce_handler(struct k_work *work)
 {
-	ARG_UNUSED(dev);
-	ARG_UNUSED(cb);
-	ARG_UNUSED(pins);
+	ARG_UNUSED(work);
 
 	if (state_changed_cb) {
 		state_changed_cb(door_sensor_is_open());
 	}
 }
 
+static void gpio_callback(const struct device *dev, struct gpio_callback *cb,
+			  uint32_t pins)
+{
+	ARG_UNUSED(dev);
+	ARG_UNUSED(cb);
+	ARG_UNUSED(pins);
+
+	k_work_reschedule(&debounce_work, K_MSEC(DEBOUNCE_MS));
+}
+
 int door_sensor_init(void)
 {
 	int ret;
+
+	k_work_init_delayable(&debounce_work, debounce_handler);
 
 	if (!gpio_is_ready_dt(&sw)) {
 		LOG_ERR("GPIO device not ready");
