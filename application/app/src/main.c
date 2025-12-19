@@ -1,80 +1,49 @@
-/*
- * Copyright (c) 2021 Nordic Semiconductor ASA
- * SPDX-License-Identifier: Apache-2.0
- */
+#include "door_sensor.h"
 
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
-#include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
 
-#include <app/drivers/blink.h>
+LOG_MODULE_REGISTER(main);
 
-#include <app_version.h>
+#define LED0_NODE DT_ALIAS(led0)
 
-LOG_MODULE_REGISTER(main, CONFIG_APP_LOG_LEVEL);
+static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 
-#define BLINK_PERIOD_MS_STEP 100U
-#define BLINK_PERIOD_MS_MAX  1000U
+static void on_door_state_changed(bool is_open)
+{
+	gpio_pin_set_dt(&led, is_open);
+	LOG_INF("Door %s", is_open ? "opened" : "closed");
+}
 
 int main(void)
 {
-	int ret;
-	unsigned int period_ms = BLINK_PERIOD_MS_MAX;
-	const struct device *sensor, *blink;
-	struct sensor_value last_val = {0}, val;
+	LOG_INF("Door Sensor Powered On");
 
-	printk("Zephyr Example Application %s\n", APP_VERSION_STRING);
-
-	sensor = DEVICE_DT_GET(DT_NODELABEL(example_sensor));
-	if (!device_is_ready(sensor)) {
-		LOG_ERR("Sensor not ready");
+	if (!gpio_is_ready_dt(&led)) {
+		LOG_ERR("LED GPIO not ready");
 		return 0;
 	}
 
-	blink = DEVICE_DT_GET(DT_NODELABEL(blink_led));
-	if (!device_is_ready(blink)) {
-		LOG_ERR("Blink LED not ready");
-		return 0;
-	}
-
-	ret = blink_off(blink);
+	int ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
 	if (ret < 0) {
-		LOG_ERR("Could not turn off LED (%d)", ret);
+		LOG_ERR("Could not configure LED GPIO (%d)", ret);
 		return 0;
 	}
 
-	printk("Use the sensor to change LED blinking period\n");
-
-	while (1) {
-		ret = sensor_sample_fetch(sensor);
-		if (ret < 0) {
-			LOG_ERR("Could not fetch sample (%d)", ret);
-			return 0;
-		}
-
-		ret = sensor_channel_get(sensor, SENSOR_CHAN_PROX, &val);
-		if (ret < 0) {
-			LOG_ERR("Could not get sample (%d)", ret);
-			return 0;
-		}
-
-		if ((last_val.val1 == 0) && (val.val1 == 1)) {
-			if (period_ms == 0U) {
-				period_ms = BLINK_PERIOD_MS_MAX;
-			} else {
-				period_ms -= BLINK_PERIOD_MS_STEP;
-			}
-
-			printk("Proximity detected, setting LED period to %u "
-			       "ms\n",
-			       period_ms);
-			blink_set_period_ms(blink, period_ms);
-		}
-
-		last_val = val;
-
-		k_sleep(K_MSEC(100));
+	ret = door_sensor_init();
+	if (ret < 0) {
+		LOG_ERR("Could not init door sensor (%d)", ret);
+		return 0;
 	}
 
+	door_sensor_set_callback(on_door_state_changed);
+
+	bool is_open = door_sensor_is_open();
+
+	gpio_pin_set_dt(&led, is_open);
+	LOG_INF("Initial state: Door %s", is_open ? "open" : "closed");
+
+	k_sleep(K_FOREVER);
 	return 0;
 }
