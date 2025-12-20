@@ -1,4 +1,5 @@
 #include "door_sensor.h"
+#include "app_task.h"
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
@@ -44,6 +45,8 @@ int main(void)
 	gpio_pin_set_dt(&led, is_open);
 	LOG_INF("Initial state: Door %s", is_open ? "open" : "closed");
 
-	k_sleep(K_FOREVER);
-	return 0;
+	CHIP_ERROR err = AppTask::Instance().StartApp();
+
+	LOG_ERR("Exited with code %" CHIP_ERROR_FORMAT, err.Format());
+	return err == CHIP_NO_ERROR ? EXIT_SUCCESS : EXIT_FAILURE;
 }

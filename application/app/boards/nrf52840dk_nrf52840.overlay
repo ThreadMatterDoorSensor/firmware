@@ -1,4 +1,8 @@
 / {
+	chosen {
+		nordic,pm-ext-flash = &mx25r64;
+	};
+
 	input {
 		compatible = "gpio-keys";
 		sensor: sensor_0 {
@@ -7,8 +11,26 @@
 			zephyr,code = <INPUT_KEY_0>;
 		};
 	};
+};
 
-	aliases {
-		radio0 = &radio;
-	};
+&adc {
+	status = "disabled";
+};
+&uart1 {
+	status = "disabled";
+};
+&i2c0 {
+	status = "disabled";
+};
+&pwm0 {
+	status = "disabled";
+};
+&spi1 {
+	status = "disabled";
+};
+&spi3 {
+	status = "disabled";
+};
+&usbd {
+	status = "disabled";
 };
