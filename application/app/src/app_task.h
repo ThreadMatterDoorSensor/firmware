@@ -22,6 +22,7 @@ class AppTask
 	};
 
 	CHIP_ERROR StartApp();
+	static void UpdateContactState(bool isOpen);
 
       private:
 	CHIP_ERROR Init();

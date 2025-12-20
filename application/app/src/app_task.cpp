@@ -29,39 +29,28 @@ constexpr chip::EndpointId kContactSensorEndpointId = 1;
 
 Nrf::Matter::IdentifyCluster sIdentifyCluster(kContactSensorEndpointId);
 
-#define APPLICATION_BUTTON_MASK DK_BTN2_MSK
-
 #ifdef CONFIG_CHIP_ICD_UAT_SUPPORT
 #define UAT_BUTTON_MASK DK_BTN3_MSK
 #endif
 } /* namespace */
 
+void AppTask::UpdateContactState(bool isOpen)
+{
+	Nrf::PostTask([isOpen] {
+		auto booleanState =
+			app::Clusters::BooleanState::FindClusterOnEndpoint(
+				kContactSensorEndpointId);
+		if (booleanState == nullptr) {
+			LOG_ERR("Updating contact sensor state failed");
+			return;
+		}
+		booleanState->SetStateValue(!isOpen);
+	});
+}
+
 void AppTask::ButtonEventHandler(Nrf::ButtonState state,
 				 Nrf::ButtonMask hasChanged)
 {
-	if ((APPLICATION_BUTTON_MASK & hasChanged)) {
-		if (state) {
-			LOG_INF("Contact sensor detected a contact (button "
-				"pressed).");
-		} else {
-			LOG_INF("Contact sensor stopped detecting a contact "
-				"(button released).");
-		}
-		Nrf::PostTask([state] {
-			auto booleanState = app::Clusters::BooleanState::
-				FindClusterOnEndpoint(kContactSensorEndpointId);
-			if (booleanState == nullptr) {
-				LOG_ERR("Updating contact sensor state failed");
-				return;
-			}
-
-			booleanState->SetStateValue(state);
-
-			Nrf::GetBoard()
-				.GetLED(Nrf::DeviceLeds::LED2)
-				.Set(state);
-		});
-	}
 #ifdef CONFIG_CHIP_ICD_UAT_SUPPORT
 	if ((UAT_BUTTON_MASK & state & hasChanged)) {
 		LOG_INF("ICD UserActiveMode has been triggered.");

@@ -15,6 +15,7 @@ static void on_door_state_changed(bool is_open)
 {
 	gpio_pin_set_dt(&led, is_open);
 	LOG_INF("Door %s", is_open ? "opened" : "closed");
+	AppTask::UpdateContactState(is_open);
 }
 
 int main(void)
@@ -44,6 +45,8 @@ int main(void)
 
 	gpio_pin_set_dt(&led, is_open);
 	LOG_INF("Initial state: Door %s", is_open ? "open" : "closed");
+
+	AppTask::UpdateContactState(is_open);
 
 	CHIP_ERROR err = AppTask::Instance().StartApp();
 
