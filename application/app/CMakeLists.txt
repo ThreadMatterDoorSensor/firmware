@@ -37,4 +37,7 @@ target_sources(app PRIVATE
 ncs_configure_data_model()
 target_sources(app PRIVATE src/door_sensor.cpp)
 target_sources(app PRIVATE src/power_monitor.cpp)
+target_sources(app PRIVATE
+  ${ZEPHYR_CONNECTEDHOMEIP_MODULE_DIR}/src/app/clusters/power-source-server/power-source-server.cpp
+)
 # NORDIC SDK APP END

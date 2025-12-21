@@ -14,6 +14,7 @@
 #include "lib/core/CHIPError.h"
 #include <app-common/zap-generated/attributes/Accessors.h>
 #include <app/clusters/boolean-state-server/CodegenIntegration.h>
+#include <app/clusters/power-source-server/power-source-server.h>
 
 #include <zephyr/logging/log.h>
 
@@ -26,6 +27,7 @@ using namespace ::chip::DeviceLayer;
 namespace
 {
 constexpr chip::EndpointId kContactSensorEndpointId = 1;
+constexpr chip::EndpointId kPowerSourceEndpointId = 0;
 
 Nrf::Matter::IdentifyCluster sIdentifyCluster(kContactSensorEndpointId);
 
@@ -45,6 +47,26 @@ void AppTask::UpdateContactState(bool isOpen)
 			return;
 		}
 		booleanState->SetStateValue(!isOpen);
+	});
+}
+
+void AppTask::UpdateBatVoltage(int32_t voltage_mv)
+{
+	Nrf::PostTask([voltage_mv] {
+		chip::app::Clusters::PowerSource::Attributes::BatVoltage::Set(
+			kPowerSourceEndpointId,
+			static_cast<uint32_t>(voltage_mv));
+
+		/* BatPercentRemaining is 0-200 (units of 0.5%).
+		 * Assumes 3000 mV = 100%, 2000 mV = 0% (typical 3V cell). */
+		constexpr int32_t kBatMaxMv = 3000;
+		constexpr int32_t kBatMinMv = 2000;
+		int32_t pct = (voltage_mv - kBatMinMv) * 200 /
+			      (kBatMaxMv - kBatMinMv);
+		pct = pct < 0 ? 0 : (pct > 200 ? 200 : pct);
+		chip::app::Clusters::PowerSource::Attributes::
+			BatPercentRemaining::Set(kPowerSourceEndpointId,
+						 static_cast<uint8_t>(pct));
 	});
 }
 

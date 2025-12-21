@@ -33,23 +33,25 @@ void MatterThreadNetworkDiagnosticsPluginServerInitCallback();
 void MatterAdministratorCommissioningPluginServerInitCallback();
 void MatterOperationalCredentialsPluginServerInitCallback();
 void MatterGroupKeyManagementPluginServerInitCallback();
+void MatterPowerSourcePluginServerInitCallback();
 void MatterBooleanStatePluginServerInitCallback();
 void MatterIcdManagementPluginServerInitCallback();
 
-#define MATTER_PLUGINS_INIT                                                                                            \
-	MatterIdentifyPluginServerInitCallback();                                                                      \
-	MatterDescriptorPluginServerInitCallback();                                                                    \
-	MatterAccessControlPluginServerInitCallback();                                                                 \
-	MatterBasicInformationPluginServerInitCallback();                                                              \
-	MatterOtaSoftwareUpdateRequestorPluginServerInitCallback();                                                    \
-	MatterGeneralCommissioningPluginServerInitCallback();                                                          \
-	MatterNetworkCommissioningPluginServerInitCallback();                                                          \
-	MatterDiagnosticLogsPluginServerInitCallback();                                                                \
-	MatterGeneralDiagnosticsPluginServerInitCallback();                                                            \
-	MatterSoftwareDiagnosticsPluginServerInitCallback();                                                           \
-	MatterThreadNetworkDiagnosticsPluginServerInitCallback();                                                      \
-	MatterAdministratorCommissioningPluginServerInitCallback();                                                    \
-	MatterOperationalCredentialsPluginServerInitCallback();                                                        \
-	MatterGroupKeyManagementPluginServerInitCallback();                                                            \
-	MatterBooleanStatePluginServerInitCallback();                                                                  \
+#define MATTER_PLUGINS_INIT                                                    \
+	MatterIdentifyPluginServerInitCallback();                              \
+	MatterDescriptorPluginServerInitCallback();                            \
+	MatterAccessControlPluginServerInitCallback();                         \
+	MatterBasicInformationPluginServerInitCallback();                      \
+	MatterOtaSoftwareUpdateRequestorPluginServerInitCallback();            \
+	MatterGeneralCommissioningPluginServerInitCallback();                  \
+	MatterNetworkCommissioningPluginServerInitCallback();                  \
+	MatterDiagnosticLogsPluginServerInitCallback();                        \
+	MatterGeneralDiagnosticsPluginServerInitCallback();                    \
+	MatterSoftwareDiagnosticsPluginServerInitCallback();                   \
+	MatterThreadNetworkDiagnosticsPluginServerInitCallback();              \
+	MatterAdministratorCommissioningPluginServerInitCallback();            \
+	MatterOperationalCredentialsPluginServerInitCallback();                \
+	MatterGroupKeyManagementPluginServerInitCallback();                    \
+	MatterPowerSourcePluginServerInitCallback();                           \
+	MatterBooleanStatePluginServerInitCallback();                          \
 	MatterIcdManagementPluginServerInitCallback();

@@ -23,6 +23,7 @@ class AppTask
 
 	CHIP_ERROR StartApp();
 	static void UpdateContactState(bool isOpen);
+	static void UpdateBatVoltage(int32_t voltage_mv);
 
       private:
 	CHIP_ERROR Init();

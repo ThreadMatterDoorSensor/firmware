@@ -17,6 +17,11 @@ static void on_door_state_changed(bool is_open)
 	gpio_pin_set_dt(&led, is_open);
 	LOG_INF("Door %s", is_open ? "opened" : "closed");
 	AppTask::UpdateContactState(is_open);
+
+	int32_t voltage_mv;
+	if (power_monitor_read_mv(&voltage_mv) == 0) {
+		AppTask::UpdateBatVoltage(voltage_mv);
+	}
 }
 
 int main(void)
@@ -44,6 +49,7 @@ int main(void)
 	ret = power_monitor_read_mv(&voltage_mv);
 	if (ret == 0) {
 		LOG_INF("Supply voltage: %d mV", voltage_mv);
+		AppTask::UpdateBatVoltage(voltage_mv);
 	}
 
 	ret = door_sensor_init();
