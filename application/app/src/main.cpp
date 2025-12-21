@@ -1,5 +1,6 @@
 #include "door_sensor.h"
 #include "app_task.h"
+#include "power_monitor.h"
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
@@ -31,6 +32,18 @@ int main(void)
 	if (ret < 0) {
 		LOG_ERR("Could not configure LED GPIO (%d)", ret);
 		return 0;
+	}
+
+	ret = power_monitor_init();
+	if (ret < 0) {
+		LOG_ERR("Could not init power monitor (%d)", ret);
+		return 0;
+	}
+
+	int32_t voltage_mv;
+	ret = power_monitor_read_mv(&voltage_mv);
+	if (ret == 0) {
+		LOG_INF("Supply voltage: %d mV", voltage_mv);
 	}
 
 	ret = door_sensor_init();

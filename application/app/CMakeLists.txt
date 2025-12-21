@@ -36,4 +36,5 @@ target_sources(app PRIVATE
 
 ncs_configure_data_model()
 target_sources(app PRIVATE src/door_sensor.cpp)
+target_sources(app PRIVATE src/power_monitor.cpp)
 # NORDIC SDK APP END

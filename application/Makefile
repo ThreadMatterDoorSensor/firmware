@@ -1,7 +1,6 @@
 build-dk:
-	rm -fr build
-	west build -p -b nrf52840dk/nrf52840 app
+	west build -b nrf52840dk/nrf52840 app
 
 flash-dk:
-	west flash
+	west flash --snr 683763498
 
