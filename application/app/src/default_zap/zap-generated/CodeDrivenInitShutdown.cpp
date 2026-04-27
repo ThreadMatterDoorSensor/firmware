@@ -59,17 +59,13 @@ void MatterClusterServerInitCallback(EndpointId endpoint, ClusterId clusterId)
 	case app::Clusters::GroupKeyManagement::Id:
 		MatterGroupKeyManagementClusterInitCallback(endpoint);
 		break;
-	case app::Clusters::PowerSource::Id:
-		MatterPowerSourceClusterInitCallback(endpoint);
-		break;
 	case app::Clusters::BooleanState::Id:
 		MatterBooleanStateClusterInitCallback(endpoint);
 		break;
 	}
 }
 
-void MatterClusterServerShutdownCallback(EndpointId endpoint,
-					 ClusterId clusterId)
+void MatterClusterServerShutdownCallback(EndpointId endpoint, ClusterId clusterId)
 {
 	switch (clusterId) {
 	case app::Clusters::Identify::Id:
@@ -97,17 +93,13 @@ void MatterClusterServerShutdownCallback(EndpointId endpoint,
 		MatterSoftwareDiagnosticsClusterShutdownCallback(endpoint);
 		break;
 	case app::Clusters::AdministratorCommissioning::Id:
-		MatterAdministratorCommissioningClusterShutdownCallback(
-			endpoint);
+		MatterAdministratorCommissioningClusterShutdownCallback(endpoint);
 		break;
 	case app::Clusters::OperationalCredentials::Id:
 		MatterOperationalCredentialsClusterShutdownCallback(endpoint);
 		break;
 	case app::Clusters::GroupKeyManagement::Id:
 		MatterGroupKeyManagementClusterShutdownCallback(endpoint);
-		break;
-	case app::Clusters::PowerSource::Id:
-		MatterPowerSourceClusterShutdownCallback(endpoint);
 		break;
 	case app::Clusters::BooleanState::Id:
 		MatterBooleanStateClusterShutdownCallback(endpoint);
