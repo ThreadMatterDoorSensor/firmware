@@ -65,7 +65,8 @@ void MatterClusterServerInitCallback(EndpointId endpoint, ClusterId clusterId)
 	}
 }
 
-void MatterClusterServerShutdownCallback(EndpointId endpoint, ClusterId clusterId)
+void MatterClusterServerShutdownCallback(EndpointId endpoint,
+					 ClusterId clusterId)
 {
 	switch (clusterId) {
 	case app::Clusters::Identify::Id:
@@ -93,7 +94,8 @@ void MatterClusterServerShutdownCallback(EndpointId endpoint, ClusterId clusterI
 		MatterSoftwareDiagnosticsClusterShutdownCallback(endpoint);
 		break;
 	case app::Clusters::AdministratorCommissioning::Id:
-		MatterAdministratorCommissioningClusterShutdownCallback(endpoint);
+		MatterAdministratorCommissioningClusterShutdownCallback(
+			endpoint);
 		break;
 	case app::Clusters::OperationalCredentials::Id:
 		MatterOperationalCredentialsClusterShutdownCallback(endpoint);
