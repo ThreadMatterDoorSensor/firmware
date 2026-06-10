@@ -11,7 +11,7 @@
 		compatible = "gpio-keys";
 		sensor: sensor_0 {
 			gpios = <&gpio1 15 (GPIO_PULL_UP | GPIO_ACTIVE_HIGH)>;
-			label = "Interrupt PIN";
+			label = "Door reed switch";
 			zephyr,code = <INPUT_KEY_0>;
 		};
 	};

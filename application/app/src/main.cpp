@@ -39,20 +39,6 @@ int main(void)
 		return 0;
 	}
 
-	gpio_pin_set_dt(&led, 1);
-        k_msleep(4000);
-	gpio_pin_set_dt(&led, 0);
-        k_msleep(4000);
-
-        /*
-	for (int i = 0; i < 3; i++) {
-		gpio_pin_set_dt(&led, 1);
-		k_msleep(200);
-		gpio_pin_set_dt(&led, 0);
-		k_msleep(200);
-	}
-        */
-
 	ret = power_monitor_init();
 	if (ret < 0) {
 		LOG_ERR("Could not init power monitor (%d)", ret);

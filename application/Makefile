@@ -5,7 +5,7 @@ UID           ?= b3a7c9e2f14d85601e3c7b92a408f517
 SALT          ?= TW92ZUlubm92YXRpb25TYWx0
 
 build-dk-debug:
-	west build -b nrf52840dk/nrf52840 app -- \
+	west build -p -b nrf52840dk/nrf52840 app -- \
 		-DEXTRA_CONF_FILE=debug.conf \
 		-DEXTRA_DTC_OVERLAY_FILE=boards/debug.overlay \
 		-DCONFIG_CHIP_DEVICE_SERIAL_NUMBER=\"$(SERIAL)\" \
@@ -15,7 +15,18 @@ build-dk-debug:
 		-DCONFIG_CHIP_DEVICE_SPAKE2_SALT=\"$(SALT)\"
 
 build-dk:
-	west build -b nrf52840dk/nrf52840 app -- \
+	west build -p -b nrf52840dk/nrf52840 app -- \
+		-DCONFIG_CHIP_DEVICE_SERIAL_NUMBER=\"$(SERIAL)\" \
+		-DCONFIG_CHIP_DEVICE_DISCRIMINATOR=$(DISCRIMINATOR) \
+		-DCONFIG_CHIP_DEVICE_SPAKE2_PASSCODE=$(PASSCODE) \
+		-DCONFIG_CHIP_DEVICE_ROTATING_DEVICE_UID=\"$(UID)\" \
+		-DCONFIG_CHIP_DEVICE_SPAKE2_SALT=\"$(SALT)\"
+
+build-custom:
+	west build -p -b custom_plank/nrf52840 app -- \
+		-DBOARD_ROOT=$(CURDIR) \
+		-DSB_CONFIG_BOOTLOADER_NONE=y \
+		-DSB_CONFIG_MATTER_OTA=n \
 		-DCONFIG_CHIP_DEVICE_SERIAL_NUMBER=\"$(SERIAL)\" \
 		-DCONFIG_CHIP_DEVICE_DISCRIMINATOR=$(DISCRIMINATOR) \
 		-DCONFIG_CHIP_DEVICE_SPAKE2_PASSCODE=$(PASSCODE) \
